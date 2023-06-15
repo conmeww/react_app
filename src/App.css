@@ -101,7 +101,7 @@
 }
 
 .main-input {
-
+    /* Что бы не вычислять ширину, нужно использовать box-sizing: border-box; */
     width: calc(100% - 32px);
     padding: 12px 16px;
     text-align: left;
@@ -290,6 +290,7 @@
 }
 
 .preview-info {
+    /* Этот блок можно было без absolute сверстать */
     position: absolute;
     left: 0px;
     top: 120px;

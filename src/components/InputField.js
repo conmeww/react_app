@@ -7,12 +7,17 @@ import check from "../check.png";
 
 const InputField = ({addText, text, selected, addItem}) => {
         const [results, setResults] = useState([]);
+        // Стейт в search и result, по моему, для одного и того же используется. Достаточно оставить что-то одно.
         const [search, setSearch] = useState("");
         const [result, setResult] = useState("");
 
         const [isSaved, setIsSaved] = useState(false);
+        // Нет смысла делать стейт для этого. Можно подставлять разный текст в кнопку в зависимости от isSaved
         const [btnText, setBtnText] = useState('Сохранить');
 
+
+        // Тест на кнопке меняется только один раз.
+        // Если сохранить организацию и затем найти еще одну, то надпись так и останется
         const saveCard = () => {
             setBtnText('Сохранено')
             setIsSaved(true);
@@ -23,6 +28,7 @@ const InputField = ({addText, text, selected, addItem}) => {
         const [cardInfo, setCardInfo] = useState({
             name: '', address: '', management: '', managementPos: '', inn: '', kpp: '', ogrn: ''
         })
+        // Не понял зачем нужна эта переменная
         let showPreview = false
 
         async function getListData() {
@@ -35,6 +41,7 @@ const InputField = ({addText, text, selected, addItem}) => {
                 }, body: JSON.stringify({query: query})
             }
 
+            // Тут можно было использовать response.json()
             await fetch(url, options).then(response => response.text())
                 .then(result => {
                     result = JSON.parse(result)
@@ -51,6 +58,9 @@ const InputField = ({addText, text, selected, addItem}) => {
             setResult(event.target.value)
             getListData()
         }
+
+        // Вместо внутренних функций, такое лучше выносить в отдельные компоненты.
+        // А если не выносишь, то лучше бы это было все вместе в блоке return - так гораздо удобнее читать верстку.
         const displayResults = () => {
             if (search.length > 0) {
                 if (results.length > 0) {
@@ -101,8 +111,8 @@ const InputField = ({addText, text, selected, addItem}) => {
                                 <div className="item-card__data"><h4>ОГРН</h4><p>{cardInfo.ogrn}</p></div>
                             </div>
                         </div>
+                        {/* Стили лучше задавать через css файлы, а в компоненте только менять классы */}
                         <button className="btn-save"
-
                                 style={{
                                     backgroundColor: isSaved ? 'transparent' : ' #F50634',
                                     color: isSaved ? ' #B9B9B9' : 'white',
@@ -178,4 +188,7 @@ const mapDispatchToProps = dispatch => ({
 const mapStateToProps = ({text, selected}) => ({
     text, selected
 });
+
+// connect нужен только для классовых компонентов.
+// Для функциональных гораздо удобнее использовать хуки useSelector и useDispatch
 export default connect(mapStateToProps, mapDispatchToProps)(InputField);
